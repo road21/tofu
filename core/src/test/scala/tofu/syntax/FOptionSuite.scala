@@ -42,27 +42,45 @@ class FOptionSuite extends AnyFlatSpec {
     )
   }
 
-  "flatMapOpt" should "run when non empty" in {
+  "semiflatMap" should "run when non empty" in {
     assert(
       42.someF[List].semiflatMap(x => List(x + 1)) === List(Some(43))
     )
   }
 
-  "flatMapOpt" should "keep empty when empty" in {
+  "semiflatMap" should "keep empty when empty" in {
     assert(
       noneF[List, Int].semiflatMap(x => List(x + 1)) === List(None)
     )
   }
 
-  "doubleFlatMap" should "run when non empty" in {
+  "flatMapF" should "run when non empty" in {
     assert(
       42.someF[List].flatMapF(x => List(Some(x + 1))) === List(Some(43))
     )
   }
 
-  "doubleFlatMap" should "keep empty when empty" in {
+  "flatMapF" should "keep empty when empty" in {
     assert(
       noneF[List, Int].flatMapF(x => List(Some(x + 1))) === List(None)
+    )
+  }
+
+  "cata" should "fold each element" in {
+    assert(
+      List[Option[Int]](Some(5), None, Some(1)).cata(10, x => x + 1) === List(6, 10, 2)
+    )
+  }
+
+  "toRight" should "map to either properly" in {
+    assert(
+      List[Option[Int]](Some(5), None).toRight(false) === List(Right(5), Left(false))
+    )
+  }
+
+  "toLeft" should "map to either properly" in {
+    assert(
+      List[Option[Int]](Some(5), None).toLeft(false) === List(Left(5), Right(false))
     )
   }
 }
